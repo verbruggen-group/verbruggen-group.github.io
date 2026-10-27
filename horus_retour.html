@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<meta name="robots" content="noindex, nofollow">
+<title>VBS — Retour Horus</title>
+<!--
+  horus_retour.html — V1 - 261026
+  Adresse HTTPS de retour (redirect_uri) declaree chez Horus pour l'integration
+  « VBS — Les Entreprises Verbruggen ».
+
+  Horus exige une URL HTTPS ; notre serveur VBS est interne et en HTTP
+  (http://10.226.9.106:5000). Cette page ne fait QU'UNE chose : renvoyer
+  aussitot le navigateur vers VBS, en transmettant tels quels les parametres
+  recus de Horus (code, state, …).
+
+  Elle ne contient aucun secret et n'en recoit aucun : le « code » d'Horus
+  est valable 2 minutes, a usage unique, et inutilisable sans le
+  client_secret, qui reste sur le serveur VBS. Aucun script externe, aucune
+  statistique, pas de referrer.
+
+  Ne fonctionne que depuis un PC du reseau de l'entreprise (c'est voulu).
+-->
+<style>
+  body{font-family:system-ui,Segoe UI,Arial,sans-serif;background:#f4f3ef;color:#2b2a27;margin:0;
+       display:flex;min-height:100vh;align-items:center;justify-content:center;padding:16px}
+  .boite{background:#fff;border:1px solid #ddd8cc;border-radius:8px;padding:24px 28px;max-width:520px}
+  h1{font-size:18px;margin:0 0 8px;color:#2b5237}
+  p{font-size:14px;line-height:1.5;margin:8px 0}
+  a{color:#2b5237}
+  .muted{color:#8a8780;font-size:12.5px}
+</style>
+</head>
+<body>
+<div class="boite">
+  <h1>VBS — connexion à Horus</h1>
+  <p id="txt">Retour vers VBS…</p>
+  <p id="lien" style="display:none"><a id="a" href="#">Continuer vers VBS</a></p>
+  <p class="muted">Cette page doit être ouverte depuis un PC du bureau : le serveur VBS n'est pas accessible depuis l'extérieur.</p>
+</div>
+<script>
+(function () {
+  var VBS = 'http://10.226.9.106:5000/horus/retour';
+  var q = window.location.search || '';
+  if (!/[?&](code|error)=/.test(q)) {
+    document.getElementById('txt').textContent =
+      "Aucune réponse de Horus à transmettre. Lancez la connexion depuis VBS (Maintenance → Horus).";
+    return;
+  }
+  var cible = VBS + q;
+  document.getElementById('a').href = cible;
+  document.getElementById('lien').style.display = '';
+  // replace : le code n'entre pas dans l'historique du navigateur.
+  window.location.replace(cible);
+})();
+</script>
+</body>
+</html>
